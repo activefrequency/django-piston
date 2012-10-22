@@ -8,7 +8,7 @@ from django.views.decorators.vary import vary_on_headers
 from django.conf import settings
 from django.core.mail import send_mail, EmailMessage
 from django.db.models.query import QuerySet
-from django.http import Http404
+from django.http import Http404, QueryDict
 
 try:
     import mimeparse
@@ -149,8 +149,11 @@ class Resource(object):
         else:
             handler = actor
 
+        if not rm in handler.allowed_methods:
+            return HttpResponseNotAllowed(handler.allowed_methods)
+
         # Translate nested datastructs into `request.data` here.
-        if rm in ('POST', 'PUT'):
+        if rm in ('POST', 'PUT', 'DELETE'):
             try:
                 translate_mime(request)
             except MimerDataException:
@@ -158,11 +161,14 @@ class Resource(object):
             if not hasattr(request, 'data'):
                 if rm == 'POST':
                     request.data = request.POST
-                else:
+                elif rm == 'PUT':
                     request.data = request.PUT
-
-        if not rm in handler.allowed_methods:
-            return HttpResponseNotAllowed(handler.allowed_methods)
+                else: # DELETE
+                    # Assume x-www-form-urlencoded
+                    if django.VERSION < (1, 4):
+                        request.data = QueryDict(request.raw_post_data)
+                    else:
+                        request.data = QueryDict(request.body)
 
         meth = getattr(handler, self.callmap.get(rm, ''), None)
         if not meth:
