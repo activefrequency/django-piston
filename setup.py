@@ -20,7 +20,11 @@ setup(
     author = 'Jesper Noehr',
     author_email = 'jesper@noehr.org',
     packages = find_packages(),
-    namespace_packages = ['piston'],
+    # Removing 'piston' as a namespaced package - see discussion on:
+    #   https://bitbucket.org/jespern/django-piston/issue/173/
+    # Note that this means that other packages can't install themselves
+    # in the piston namespace (i.e. piston.*)
+    # namespace_packages = ['piston'],
     include_package_data = True,
     zip_safe = False,
     classifiers = [
