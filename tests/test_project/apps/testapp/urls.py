@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication, HttpBasicSimple
 
-from test_project.apps.testapp.handlers import EntryHandler, ExpressiveHandler, AbstractHandler, EchoHandler, PlainOldObjectHandler, Issue58Handler, ListFieldsHandler, FileUploadHandler, CircularAHandler
+from test_project.apps.testapp.handlers import EntryHandler, ExpressiveHandler, AbstractHandler, EchoHandler, PlainOldObjectHandler, Issue58Handler, Issue192Handler, ListFieldsHandler
 
 auth = HttpBasicAuthentication(realm='TestApplication')
 
@@ -13,6 +13,7 @@ echo = Resource(handler=EchoHandler)
 popo = Resource(handler=PlainOldObjectHandler)
 list_fields = Resource(handler=ListFieldsHandler)
 issue58 = Resource(handler=Issue58Handler)
+issue192 = Resource(handler=Issue192Handler)
 fileupload = Resource(handler=FileUploadHandler)
 circular_a = Resource(handler=CircularAHandler)
 
@@ -37,6 +38,7 @@ urlpatterns = patterns(
     url(r'^entry-(?P<pk>.+)\.(?P<emitter_format>.+)', entries),
 
     url(r'^issue58\.(?P<emitter_format>.+)$', issue58),
+    url(r'^issue192\.(?P<emitter_format>.+)$', issue192),
 
     url(r'^expressive\.(?P<emitter_format>.+)$', expressive),
 
