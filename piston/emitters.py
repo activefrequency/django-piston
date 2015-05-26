@@ -405,7 +405,7 @@ Emitter.register('xml', XMLEmitter, 'text/xml; charset=utf-8')
 Mimer.register(lambda *a: None, ('text/xml',))
 
 
-class OldDjangoJSONEncoder(simplejson.JSONEncoder):
+class OldDjangoJSONEncoder(json.JSONEncoder):
     """
     JSONEncoder subclass that knows how to encode date/time and decimal types.
     """
@@ -439,7 +439,7 @@ class JSONEmitter(Emitter):
     """
     def render(self, request):
         cb = request.GET.get('callback', None)
-        seria = simplejson.dumps(self.construct(), cls=OldDjangoJSONEncoder, ensure_ascii=False, indent=4)
+        seria = json.dumps(self.construct(), cls=OldDjangoJSONEncoder, ensure_ascii=False, indent=4)
 
         # Callback
         if cb and is_valid_jsonp_callback_value(cb):
@@ -448,7 +448,7 @@ class JSONEmitter(Emitter):
         return seria
 
 Emitter.register('json', JSONEmitter, 'application/json; charset=utf-8')
-Mimer.register(simplejson.loads, ('application/json',))
+Mimer.register(json.loads, ('application/json',))
 
 class YAMLEmitter(Emitter):
     """
