@@ -70,6 +70,13 @@ class Consumer(models.Model):
         self.save()
 
 
+def current_timestamp():
+    """
+    Django's new migrations framework doesn't play well with lambda callables.
+    However, it's fine with named functions.
+    """
+    return long(time.time())
+
 class Token(models.Model):
     REQUEST = 1
     ACCESS = 2
@@ -79,7 +86,7 @@ class Token(models.Model):
     secret = models.CharField(max_length=SECRET_SIZE)
     verifier = models.CharField(max_length=VERIFIER_SIZE)
     token_type = models.IntegerField(choices=TOKEN_TYPES)
-    timestamp = models.IntegerField(default=long(time.time()))
+    timestamp = models.IntegerField(default=current_timestamp)
     is_approved = models.BooleanField(default=False)
     
     user = models.ForeignKey(User, null=True, blank=True, related_name='tokens')
